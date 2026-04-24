@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import {
   Alert,
   Box,
@@ -8,9 +9,11 @@ import {
   CardContent,
   Container,
   Divider,
+  Snackbar,
   Stack,
   Typography,
 } from '@mui/material'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { selectSubmittedFormData } from '../store/slices/formSlice'
 
 function Row({ label, value }) {
@@ -26,6 +29,14 @@ function Row({ label, value }) {
 
 function SubmittedDataPage() {
   const submittedData = useSelector(selectSubmittedFormData)
+  const location = useLocation()
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  useEffect(() => {
+    if (location.state?.justSubmitted) {
+      setShowSuccess(true)
+    }
+  }, [location.state])
 
   if (!submittedData) {
     return (
@@ -66,6 +77,17 @@ function SubmittedDataPage() {
           </Stack>
         </CardContent>
       </Card>
+
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={2000}
+        onClose={() => setShowSuccess(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert icon={<CheckCircleOutlineIcon fontSize="inherit" />} severity="success" onClose={() => setShowSuccess(false)}>
+          Submitted data saved in Redux.
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }

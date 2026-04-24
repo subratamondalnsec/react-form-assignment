@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useFormik } from 'formik'
@@ -11,10 +12,20 @@ import {
   Container,
   Divider,
   Grid,
+  InputAdornment,
   MenuItem,
+  Snackbar,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material'
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline'
+import MailOutlineIcon from '@mui/icons-material/MailOutline'
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined'
+import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined'
+import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { saveFormData } from '../store/slices/formSlice'
 
 const countries = ['India', 'United States', 'Germany', 'France', 'Spain', 'Mexico']
@@ -37,6 +48,7 @@ const validationSchema = Yup.object({
 function FormPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [successOpen, setSuccessOpen] = useState(false)
 
   const formik = useFormik({
     initialValues: {
@@ -48,20 +60,28 @@ function FormPage() {
       address: '',
     },
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
+    validateOnMount: true,
+    onSubmit: async (values, { resetForm, setSubmitting }) => {
       dispatch(saveFormData(values))
+      setSuccessOpen(true)
+
+      await new Promise((resolve) => {
+        setTimeout(resolve, 650)
+      })
+
       resetForm()
-      navigate('/submitted-data')
+      setSubmitting(false)
+      navigate('/submitted-data', { state: { justSubmitted: true } })
     },
   })
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Card elevation={4} sx={{ borderRadius: 3, overflow: 'hidden' }}>
+    <Container maxWidth="md" sx={{ py: { xs: 2, md: 4 } }}>
+      <Card elevation={3} sx={{ borderRadius: 3, overflow: 'hidden' }}>
         <Box
           sx={{
-            px: 4,
-            py: 3,
+            px: { xs: 2.5, md: 4 },
+            py: { xs: 2.5, md: 3 },
             background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 55%, #93c5fd 100%)',
           }}
         >
@@ -73,7 +93,7 @@ function FormPage() {
           </Typography>
         </Box>
         <Divider />
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
           <Alert severity="info" sx={{ mb: 3 }}>
             Fields are validated with Yup and Formik before submit.
           </Alert>
@@ -83,57 +103,93 @@ function FormPage() {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  size="small"
                   id="name"
                   name="name"
                   label="Full Name"
+                  placeholder="Subrata Mondal"
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.name && Boolean(formik.errors.name)}
                   helperText={formik.touched.name && formik.errors.name}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonOutlineIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  size="small"
                   id="email"
                   name="email"
                   label="Email"
+                  placeholder="name@example.com"
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MailOutlineIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  size="small"
                   id="phone"
                   name="phone"
                   label="Phone"
+                  placeholder="9876543210"
                   value={formik.values.phone}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneOutlinedIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
+                  size="small"
                   id="age"
                   name="age"
                   label="Age"
                   type="number"
+                  placeholder="18"
                   value={formik.values.age}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.age && Boolean(formik.errors.age)}
                   helperText={formik.touched.age && formik.errors.age}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CakeOutlinedIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
@@ -141,14 +197,22 @@ function FormPage() {
                 <TextField
                   select
                   fullWidth
+                  size="small"
                   id="country"
                   name="country"
                   label="Country"
+                  helperText={formik.touched.country && formik.errors.country ? formik.errors.country : 'Select your country'}
                   value={formik.values.country}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.country && Boolean(formik.errors.country)}
-                  helperText={formik.touched.country && formik.errors.country}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PublicOutlinedIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 >
                   {countries.map((country) => (
                     <MenuItem key={country} value={country}>
@@ -161,40 +225,65 @@ function FormPage() {
               <Grid size={{ xs: 12 }}>
                 <TextField
                   fullWidth
+                  size="small"
                   multiline
                   minRows={3}
                   id="address"
                   name="address"
                   label="Address"
+                  placeholder="Street, city, state, zip"
+                  helperText={formik.touched.address && formik.errors.address ? formik.errors.address : 'Write your full address'}
                   value={formik.values.address}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.touched.address && Boolean(formik.errors.address)}
-                  helperText={formik.touched.address && formik.errors.address}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <HomeOutlinedIcon fontSize="small" color="primary" />
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
             </Grid>
 
-            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ mt: 3, flexWrap: 'wrap' }}>
+              <Button type="button" variant="outlined" color="secondary" onClick={formik.handleReset}>
+                Reset
+              </Button>
+
               <Button
                 type="submit"
                 variant="contained"
                 size="large"
+                disabled={!formik.isValid || formik.isSubmitting}
                 sx={{
                   px: 4,
-                  fontWeight: 600,
                   backgroundColor: '#1565c0',
                   '&:hover': {
                     backgroundColor: '#0d47a1',
                   },
+                  transition: 'all 180ms ease',
                 }}
               >
-                Submit
+                {formik.isSubmitting ? 'Submitting...' : 'Submit'}
               </Button>
-            </Box>
+            </Stack>
           </Box>
         </CardContent>
       </Card>
+
+      <Snackbar
+        open={successOpen}
+        autoHideDuration={1400}
+        onClose={() => setSuccessOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert icon={<CheckCircleOutlineIcon fontSize="inherit" />} severity="success" onClose={() => setSuccessOpen(false)}>
+          Form submitted successfully.
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
