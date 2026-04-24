@@ -1,43 +1,100 @@
-# React-Design-Form 📝
+# React Design Form
 
-A dynamic and responsive form built with **React, JavaScript, and TailwindCSS**.  
-The form includes multiple input types such as text fields, dropdowns, checkboxes, and radio buttons with **real-time state management** using React's `useState` hook.
+A modern multi-page React form project built with Material UI, Formik, Yup, Redux Toolkit, and React Router.
 
----
+This project includes:
+- A validated form page
+- Redux-based submitted data storage
+- A submitted-data display page
+- A public API page using createAsyncThunk and extraReducers
 
-## ✨ Features
-- 👤 Collects user information: first name, last name, email, address, city, state, pin code  
-- 🌎 Country selection via dropdown  
-- ✅ Checkbox options for comments, candidate updates, and offers  
-- 📲 Radio buttons for push notification preferences  
-- 🔄 State management updates in real-time  
-- 🖥️ Styled using **TailwindCSS** for responsive and modern UI  
-- 📄 Form submission logs data and resets inputs  
+## Features
 
----
+- Blue-themed responsive UI using Material UI theming
+- Form built with Material UI components
+- Formik for form state and submission handling
+- Yup schema validation with field-level error messages
+- Redux Toolkit slice for submitted form data
+- API integration with createAsyncThunk
+- Pending, fulfilled, and rejected API state handling via extraReducers
+- Route-based navigation across pages
+- User feedback states: loading indicators, alerts, and submission snackbar
 
-## 🛠 Tech Stack
-- **React.js**  
-- **JavaScript (ES6+)**  
-- **TailwindCSS**  
+## Tech Stack
 
----
+- React 19
+- Vite
+- Material UI
+- Formik
+- Yup
+- Redux Toolkit
+- React Redux
+- React Router DOM
 
-## 🚀 Getting Started
+## Project Structure
 
-### ✅ Prerequisites
-- Node.js & npm installed on your system
+```text
+src/
+	App.jsx
+	main.jsx
+	theme.js
+	pages/
+		FormPage.jsx
+		SubmittedDataPage.jsx
+		ApiDataPage.jsx
+	store/
+		index.js
+		slices/
+			formSlice.js
+			apiSlice.js
+```
 
-### 🔧 Installation
+## Routes
+
+- /form - Form page
+- /submitted-data - Displays submitted Redux form data
+- /api-data - Displays fetched public API data
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Installation
+
 ```bash
-# Clone the repository
 git clone https://github.com/subratamondalnsec/React-Design-Form.git
-
-# Navigate into the folder
 cd React-Design-Form
-
-# Install dependencies
 npm install
+```
 
-# Run the app
-npm start
+### Run Development Server
+
+```bash
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+## API Used
+
+- JSONPlaceholder Users Endpoint:
+	https://jsonplaceholder.typicode.com/users
+
+## Notes
+
+- Form data is stored in Redux on submit.
+- Submitted-data page safely handles empty state.
+- API page handles loading, error, and success states.
